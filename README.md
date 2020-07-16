@@ -14,7 +14,7 @@ allprojects {
 ```java
 dependencies {
     ···
-    implementation 'com.github.wy749814530:NavigationBar:Tag'
+    implementation 'com.github.wy749814530:NavigationBar:1.0.2'
 }
 ```
 ## 二、XML 布局
