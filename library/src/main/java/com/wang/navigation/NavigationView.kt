@@ -41,7 +41,7 @@ class NavigationView : View, ItemController {
     private var selectColor = Color.parseColor("#ff5d5e")
     private var backgroudColor = Color.parseColor("#FFFFFF")
     private var selectedListener: OnTabItemSelectedListener? = null
-    private var navigationPager: NavigationPager? = null
+    private lateinit var navigationPager: NavigationPager
     private val paint = Paint()
     private var itemCount = 0
     private var currentSelectIndex = 0
@@ -79,7 +79,7 @@ class NavigationView : View, ItemController {
         return this
     }
 
-    override fun setTitleSize(textSize: Int): NavigationView {
+    override fun setTextSize(textSize: Int): NavigationView {
         this.textSize = textSize
         return this
     }
@@ -89,7 +89,7 @@ class NavigationView : View, ItemController {
         return this
     }
 
-    override fun setTitleIconMargin(titleIconMargin: Int): NavigationView {
+    override fun setMargin(titleIconMargin: Int): NavigationView {
         this.titleIconMargin = titleIconMargin
         return this
     }
@@ -136,8 +136,8 @@ class NavigationView : View, ItemController {
         if (navigationPager == null || index >= fragmentList.size || index < 0) {
             return
         }
-        if (navigationPager!!.enableSlide()) {
-            navigationPager!!.setCurrentItem(target)
+        if (navigationPager.enableSlide()) {
+            navigationPager.setCurrentItem(target)
         } else {
             switchFragment(target)
         }
@@ -187,7 +187,7 @@ class NavigationView : View, ItemController {
         if (navigationPager == null) {
             navigationPager = NavigationPager()
         }
-        return navigationPager!!
+        return navigationPager
     }
 
     inner class NavigationPager {
