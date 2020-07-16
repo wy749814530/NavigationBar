@@ -132,6 +132,15 @@ fun addItem(
 ```java
  fun build(): NavigationView.NavigationPager
 ```
+#### 5.1 NavigationView.NavigationPager 
+##### 5.1.1 若需要支持左右滑动则需要设置ViewPager,不需要左右滑动，则不需要调用此方法。
+```java
+ fun setWithViewPager(viewPager: ViewPager?): NavigationPager 
+```
+#### 5.1.2 构建完成开始绘制
+```java
+fun applay() 
+```
 
 ### 6. 设置要显示的Fragment 
 ```java
