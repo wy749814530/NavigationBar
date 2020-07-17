@@ -33,7 +33,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation project(path: ':library')
+//    implementation 'com.github.wy749814530:NavigationBar:1.0.2'
 
 }

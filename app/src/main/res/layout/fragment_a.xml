@@ -3,11 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/guidePages"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        android:text="引导页"/>
 </RelativeLayout>

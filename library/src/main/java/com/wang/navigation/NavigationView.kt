@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -41,26 +42,23 @@ class NavigationView : View, ItemController {
     private var selectColor = Color.parseColor("#ff5d5e")
     private var backgroudColor = Color.parseColor("#FFFFFF")
     private var selectedListener: OnTabItemSelectedListener? = null
-    private lateinit var navigationPager: NavigationPager
+    private var navigationPager: NavigationPager? = null
     private val paint = Paint()
     private var itemCount = 0
-    private var currentSelectIndex = 0
+    private var currentSelectIndex = -1
     private var defaultSelectIndex = 0
     private var textSize = 12
     private var iconWidth = 30
     private var iconHeight = 30
     private var titleIconMargin = 5
-//    private lateinit var mContext: Context
 
     constructor(context: Context) : super(context, null) {
-//        this.mContext = context
     }
 
     constructor(
         context: Context,
         attrs: AttributeSet?
     ) : super(context, attrs) {
-//        this.mContext = context
     }
 
     override fun setContainer(containerId: Int): NavigationView {
@@ -133,16 +131,14 @@ class NavigationView : View, ItemController {
     }
 
     override fun setSelect(index: Int) {
-        if (navigationPager == null || index >= fragmentList.size || index < 0) {
+        if (index >= fragmentList.size || index < 0) {
             return
         }
-        if (navigationPager.enableSlide()) {
-            navigationPager.setCurrentItem(target)
+        if (navigationPager != null && navigationPager!!.enableSlide()) {
+            navigationPager?.setCurrentItem(index)
         } else {
-            switchFragment(target)
+            switchFragment(index)
         }
-        target = index
-        currentSelectIndex = index
         invalidate()
     }
 
@@ -162,6 +158,31 @@ class NavigationView : View, ItemController {
         } else titleList[index]
     }
 
+    fun builder() {
+        itemCount = fragmentClassList.size
+        //预创建bitmap的Rect并缓存
+        //预创建icon的Rect并缓存
+        for (i in 0 until itemCount) {
+            val beforeBitmap = getBitmap(defaultIconResList.get(i))
+            defaultBitmapList.add(beforeBitmap)
+            val afterBitmap = getBitmap(selectIconResList.get(i))
+            selectBitmapList.add(afterBitmap)
+            val rect = Rect()
+            iconRectList.add(rect)
+            val clx = fragmentClassList[i]
+            try {
+                val fragment = clx.newInstance() as Fragment
+                fragmentList.add(fragment)
+            } catch (e: InstantiationException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            }
+        }
+        switchFragment(defaultSelectIndex)
+        invalidate()
+    }
+
     override fun build(): NavigationPager {
         itemCount = fragmentClassList.size
         //预创建icon的Rect并缓存
@@ -174,8 +195,7 @@ class NavigationView : View, ItemController {
             iconRectList.add(rect)
             val clx = fragmentClassList[i]
             try {
-                val fragment =
-                    clx.newInstance() as Fragment
+                val fragment = clx.newInstance() as Fragment
                 fragmentList.add(fragment)
             } catch (e: InstantiationException) {
                 e.printStackTrace()
@@ -183,11 +203,11 @@ class NavigationView : View, ItemController {
                 e.printStackTrace()
             }
         }
-        currentSelectIndex = defaultSelectIndex
+
         if (navigationPager == null) {
             navigationPager = NavigationPager()
         }
-        return navigationPager
+        return navigationPager!!
     }
 
     inner class NavigationPager {
@@ -226,9 +246,9 @@ class NavigationView : View, ItemController {
             }
         }
 
-        fun applay() {
+        fun apply() {
             if (mViewPager == null) {
-                switchFragment(currentSelectIndex)
+                switchFragment(defaultSelectIndex)
             }
             invalidate()
         }
@@ -244,14 +264,13 @@ class NavigationView : View, ItemController {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-
         }
 
         override fun onPageSelected(position: Int) {
             if (selectedListener != null) {
                 selectedListener!!.onSelected(position, currentSelectIndex)
             }
-            setSelect(position)
+            upSelect(position)
         }
 
         override fun onPageScrollStateChanged(state: Int) {}
@@ -263,13 +282,7 @@ class NavigationView : View, ItemController {
     private var titleBaseLine = 0
     private var marginTop = 0
     private var parentItemWidth = 0
-    override fun onLayout(
-        changed: Boolean,
-        left: Int,
-        top: Int,
-        right: Int,
-        bottom: Int
-    ) {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         if (itemCount != 0) {
             //单个item宽高
@@ -465,18 +478,27 @@ class NavigationView : View, ItemController {
         return x / parentItemWidth
     }
 
+    private fun upSelect(index: Int) {
+        if (index >= fragmentList.size || index < 0) {
+            return
+        }
+        currentSelectIndex = index
+        invalidate()
+    }
+
+
     //////////////////////////////////////////////////
     //碎片处理代码
     //////////////////////////////////////////////////
     private var currentFragment: Fragment? = null
-    private fun switchFragment(target: Int) {
-        if (target == currentSelectIndex || target < 0 || target >= fragmentList.size) {
+    private fun switchFragment(pageIndex: Int) {
+        if (pageIndex < 0 || pageIndex >= fragmentList.size) {
             return
         }
-        val fragment = fragmentList[target]
+        currentSelectIndex = target
+        val fragment = fragmentList[pageIndex]
         val frameLayoutId = containerId
         if (fragment != null) {
-            //只支持AppCompatActivity
             val transaction =
                 (context as AppCompatActivity).supportFragmentManager.beginTransaction()
             if (fragment.isAdded) {

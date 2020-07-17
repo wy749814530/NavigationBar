@@ -30,6 +30,8 @@ class FragmnetB : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        Log.i(javaClass.simpleName, "=========  onResume  ======")
+
         textView!!.text = "FragmnetB"
     }
 
@@ -39,8 +41,8 @@ class FragmnetB : Fragment() {
     }
 
     fun refresh() {
-        Log.i(javaClass.simpleName, "=========  refresh  ======")
-        if (!isDetached) {
+        Log.i(javaClass.simpleName, "=========  refresh $isDetached $isAdded $isInLayout ======")
+        if (isAdded) {
             Toast.makeText(context, javaClass.simpleName + " 数据刷新了", Toast.LENGTH_SHORT)
                 .show()
         }
