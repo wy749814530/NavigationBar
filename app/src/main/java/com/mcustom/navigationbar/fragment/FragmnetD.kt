@@ -32,7 +32,7 @@ class FragmnetD : Fragment() {
         super.onResume()
         Log.i(javaClass.simpleName, "=========  onResume  ======")
 
-        textView!!.text = "FragmnetD"
+        textView!!.text = "FragmentD"
     }
 
     override fun onDestroyView() {
