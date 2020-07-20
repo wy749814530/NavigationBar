@@ -3,7 +3,9 @@ package com.wang.navigation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -11,6 +13,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -18,12 +21,15 @@ import com.wang.navigation.adapter.FragmentViewPagerAdapter
 import com.wang.navigation.listener.OnTabItemSelectedListener
 import java.util.*
 
+
 /**
  * @WYU-WIN
  * @date 2020/7/14 0014.
  * description：
  */
 class NavigationView : View, ItemController {
+    private var TAG: String = this::class.java.simpleName
+
     //////////////////////////////////////////////////
     //数据准备
     //////////////////////////////////////////////////
@@ -34,8 +40,6 @@ class NavigationView : View, ItemController {
     private val selectIconResList: MutableList<Int> = ArrayList()
     private val fragmentList: MutableList<Fragment> = ArrayList()
     private val roundList: MutableList<Boolean> = ArrayList()
-    private val defaultBitmapList: MutableList<Bitmap> = ArrayList()
-    private val selectBitmapList: MutableList<Bitmap> = ArrayList()
     private val iconRectList: MutableList<Rect> = ArrayList()
     private val textXList: MutableList<Int> = ArrayList()
     private var defaultColor = Color.parseColor("#999999")
@@ -163,10 +167,6 @@ class NavigationView : View, ItemController {
         //预创建bitmap的Rect并缓存
         //预创建icon的Rect并缓存
         for (i in 0 until itemCount) {
-            val beforeBitmap = getBitmap(defaultIconResList.get(i))
-            defaultBitmapList.add(beforeBitmap)
-            val afterBitmap = getBitmap(selectIconResList.get(i))
-            selectBitmapList.add(afterBitmap)
             val rect = Rect()
             iconRectList.add(rect)
             val clx = fragmentClassList[i]
@@ -179,6 +179,7 @@ class NavigationView : View, ItemController {
                 e.printStackTrace()
             }
         }
+        currentSelectIndex = defaultSelectIndex;
         switchFragment(defaultSelectIndex)
         invalidate()
     }
@@ -187,10 +188,7 @@ class NavigationView : View, ItemController {
         itemCount = fragmentClassList.size
         //预创建icon的Rect并缓存
         for (i in 0 until itemCount) {
-            val beforeBitmap = getBitmap(defaultIconResList[i])
-            defaultBitmapList.add(beforeBitmap)
-            val afterBitmap = getBitmap(selectIconResList[i])
-            selectBitmapList.add(afterBitmap)
+
             val rect = Rect()
             iconRectList.add(rect)
             val clx = fragmentClassList[i]
@@ -247,6 +245,7 @@ class NavigationView : View, ItemController {
         }
 
         fun apply() {
+            currentSelectIndex = defaultSelectIndex;
             if (mViewPager == null) {
                 switchFragment(defaultSelectIndex)
             }
@@ -388,13 +387,16 @@ class NavigationView : View, ItemController {
                 }
                 //画对应图标
                 var bitmap: Bitmap? = null
-                bitmap = if (i == currentSelectIndex) {
-                    selectBitmapList[i]
-                } else {
-                    defaultBitmapList[i]
-                }
                 val rect = iconRectList[i]
-                canvas.drawBitmap(bitmap, null, rect, paint) //null代表bitmap全部画出
+                bitmap = if (i == currentSelectIndex) {
+                    getIconBitmap(selectIconResList[i])
+                } else {
+                    getIconBitmap(defaultIconResList[i])
+                }
+                if (bitmap != null) {
+                    canvas.drawBitmap(bitmap, null, rect, paint) //null代表bitmap全部画出
+                }
+
                 //画文字
                 val title = titleList[i]
                 if (i == currentSelectIndex) {
@@ -440,14 +442,39 @@ class NavigationView : View, ItemController {
     ///////////////////////////////////////////////////////
     // 内部处理方法区域
     ///////////////////////////////////////////////////////
-    private fun getBitmap(resId: Int): Bitmap {
-        val bitmapDrawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            context.resources.getDrawable(resId, null) as BitmapDrawable
-        } else {
-            context.resources.getDrawable(resId) as BitmapDrawable
-        }
-        return bitmapDrawable.bitmap
+    private fun getBitmapFromDrawable(drawable: Drawable): Bitmap {
+        val bmp = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bmp)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bmp
     }
+
+    fun getIconBitmap(iconId: Int): Bitmap? {
+        return try {
+            val icon = ContextCompat.getDrawable(context, iconId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && icon is AdaptiveIconDrawable) {
+                val bitmap = Bitmap.createBitmap(
+                    icon.getIntrinsicWidth(),
+                    icon.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                icon.setBounds(0, 0, canvas.width, canvas.height)
+                icon.draw(canvas)
+                bitmap
+            } else {
+                (icon as BitmapDrawable).bitmap
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 
     private fun dp2px(dpValue: Float): Int {
         val scale = context.resources.displayMetrics.density

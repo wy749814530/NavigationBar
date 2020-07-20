@@ -19,7 +19,7 @@ class GuidePagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_guide_pages)
 
         navigationView.setContainer(R.id.frame_main_lay).setMarginBottom(40)
-            .setIcons(R.mipmap.ic_launcher, R.mipmap.ic_launcher_round)
+            .setIcons(R.mipmap.ic_launcher, R.mipmap.file)
             .addPage(FragmnetB::class.java).addPage(FragmnetC::class.java)
             .addPage(FragmnetD::class.java).addPage(FragmnetE::class.java).build()
             .setWithViewPager(viewPager).apply()

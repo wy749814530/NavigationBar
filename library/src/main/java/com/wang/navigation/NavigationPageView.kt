@@ -2,12 +2,14 @@ package com.wang.navigation
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.wang.navigation.adapter.FragmentViewPagerAdapter
@@ -29,8 +31,6 @@ class NavigationPageView : View, PageController {
     private val iconRectList: MutableList<Rect> = ArrayList()
     private var defaultIcon: Int = 0
     private var selectIcon: Int = 0
-    private var defaultBitmap: Bitmap? = null
-    private var selectBitmap: Bitmap? = null
     private var defaultColor = Color.parseColor("#999999")
     private var selectColor = Color.parseColor("#ff5d5e")
     private var backgroudColor = Color.parseColor("#FFFFFF")
@@ -130,11 +130,6 @@ class NavigationPageView : View, PageController {
     override fun build(): NavigationPager {
         itemCount = fragmentClassList.size
         //预创建icon的Rect并缓存
-        if (selectIcon != 0 && defaultIcon != 0) {
-            defaultBitmap = getBitmap(defaultIcon)
-            selectBitmap = getBitmap(selectIcon)
-        }
-
         for (i in 0 until itemCount) {
             val rect = Rect()
             iconRectList.add(rect)
@@ -191,6 +186,7 @@ class NavigationPageView : View, PageController {
         }
 
         fun apply() {
+            currentSelectIndex = defaultSelectIndex
             if (mViewPager == null) {
                 switchFragment(defaultSelectIndex)
             }
@@ -235,7 +231,7 @@ class NavigationPageView : View, PageController {
         bottom: Int
     ) {
         super.onLayout(changed, left, top, right, bottom)
-        if (itemCount != 0 && selectBitmap != null && defaultBitmap != null) {
+        if (itemCount != 0) {
             //图标边长
             //图标间距margin
             val localIconMargin = dp2px(iconMargin.toFloat())
@@ -265,24 +261,11 @@ class NavigationPageView : View, PageController {
             paint.color = backgroudColor
             // 画背景颜色
             for (i in 0 until itemCount) {
-//                paint.color = backgroudColor
-//                val isRoundItem = roundList[i]
-//                if (isRoundItem) {
-//                    // 画弧形区域
-//                    val rect = iconRectList[i]
-//                    val radius = height / 2
-//                    canvas.drawCircle(
-//                        rect.centerX().toFloat(),
-//                        radius.toFloat(),
-//                        radius.toFloat(),
-//                        paint
-//                    )
-//                }
                 //画对应图标
                 var bitmap = if (i == currentSelectIndex) {
-                    selectBitmap
+                    getBitmap(selectIcon)
                 } else {
-                    defaultBitmap
+                    getBitmap(defaultIcon)
                 }
                 val rect = iconRectList[i]
                 if (bitmap != null) {
@@ -295,13 +278,25 @@ class NavigationPageView : View, PageController {
     ///////////////////////////////////////////////////////
     // 内部处理方法区域
     ///////////////////////////////////////////////////////
-    private fun getBitmap(resId: Int): Bitmap {
-        val bitmapDrawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            context.resources.getDrawable(resId, null) as BitmapDrawable
-        } else {
-            context.resources.getDrawable(resId) as BitmapDrawable
+    fun getBitmap(iconId: Int): Bitmap? {
+        return try {
+            val icon = ContextCompat.getDrawable(context, iconId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && icon is AdaptiveIconDrawable) {
+                val bitmap = Bitmap.createBitmap(
+                    icon.getIntrinsicWidth(),
+                    icon.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                icon.setBounds(0, 0, canvas.width, canvas.height)
+                icon.draw(canvas)
+                bitmap
+            } else {
+                (icon as BitmapDrawable).bitmap
+            }
+        } catch (e: Exception) {
+            null
         }
-        return bitmapDrawable.bitmap
     }
 
     private fun dp2px(dpValue: Float): Int {
@@ -325,11 +320,7 @@ class NavigationPageView : View, PageController {
     //////////////////////////////////////////////////
     private var currentFragment: Fragment? = null
     private fun switchFragment(pageIndex: Int) {
-        Log.i(
-            "BottomBar.Java",
-            "pageIndex : $pageIndex , currentSelectIndex : $currentSelectIndex"
-        )
-        if (pageIndex == currentSelectIndex || pageIndex < 0 || pageIndex >= fragmentList.size) {
+        if (pageIndex < 0 || pageIndex >= fragmentList.size) {
             return
         }
         currentSelectIndex = pageIndex

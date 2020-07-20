@@ -1,5 +1,6 @@
 package com.mcustom.navigationbar.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.mcustom.navigationbar.R
+import kotlinx.android.synthetic.main.fragment_b.*
 
 /**
  * @WYU-WIN
@@ -28,11 +30,16 @@ class FragmnetB : Fragment() {
         return rootView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        btnDaoHang.setOnClickListener {
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         Log.i(javaClass.simpleName, "=========  onResume  ======")
 
-        textView!!.text = "FragmentB"
     }
 
     override fun onDestroyView() {
@@ -43,8 +50,7 @@ class FragmnetB : Fragment() {
     fun refresh() {
         Log.i(javaClass.simpleName, "=========  refresh $isDetached $isAdded $isInLayout ======")
         if (isAdded) {
-            Toast.makeText(context, javaClass.simpleName + " 数据刷新了", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(context, javaClass.simpleName + " 数据刷新了", Toast.LENGTH_SHORT).show()
         }
     }
 }

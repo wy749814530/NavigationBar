@@ -30,6 +30,10 @@
         <activity
             android:name=".GuidePagesActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".NewNaviationActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

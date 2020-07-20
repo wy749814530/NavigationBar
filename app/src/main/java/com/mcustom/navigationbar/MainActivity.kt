@@ -20,30 +20,30 @@ class MainActivity : AppCompatActivity() {
             ).addItem(
                 FragmnetA::class.java,
                 "AAAA",
-                R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round
+                R.mipmap.def_icon,
+                R.mipmap.file
             )
             .addItem(
                 FragmnetB::class.java,
                 "BBBB",
-                R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round
+                R.mipmap.def_icon,
+                R.mipmap.file
             ).addRoundItem(
                 FragmnetC::class.java,
-                "CCCC",
-                R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round
+                "",
+                R.mipmap.def_recommend,
+                R.mipmap.select_recommend
             ).addRoundItem(
                 FragmnetD::class.java,
-                "",
-                R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round
+                "DDDDD",
+                R.mipmap.def_dev,
+                R.mipmap.select_dev
             )
             .addItem(
                 FragmnetE::class.java,
                 "EEEE",
-                R.mipmap.ic_launcher,
-                R.mipmap.ic_launcher_round
+                R.mipmap.def_me,
+                R.mipmap.select_me
             ).build().setWithViewPager(viewPager).apply()
 
         navigationView.setTabItemSelectedListener(object : OnTabItemSelectedListener {
