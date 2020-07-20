@@ -1,5 +1,5 @@
 # NavigationBar
-简单实用的底部导航栏
+Android 一行代码创建底部导航栏
 ## 一、如何引入
 ### Step 1. 将JitPack存储库添加到您的构建文件中
 ```java
@@ -14,7 +14,7 @@ allprojects {
 ```java
 dependencies {
     ···
-    implementation 'com.github.wy749814530:NavigationBar:1.0.4'
+    implementation 'com.github.wy749814530:NavigationBar:1.0.6'
 }
 ```
 ## 二、XML 布局
