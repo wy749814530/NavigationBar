@@ -10,7 +10,6 @@ import com.wang.navigation.listener.OnTabItemSelectedListener
  * description：
  */
 interface ItemController {
-
     /**
      * 设置对应Fragment 的ID
      *
