@@ -1,4 +1,4 @@
-package com.wang.navigation
+package com.wang.navigation.control
 
 import androidx.fragment.app.Fragment
 import com.wang.navigation.NavigationView

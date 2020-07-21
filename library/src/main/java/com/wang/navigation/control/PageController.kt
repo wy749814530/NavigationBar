@@ -1,7 +1,7 @@
-package com.wang.navigation
+package com.wang.navigation.control
 
 import androidx.fragment.app.Fragment
-import com.wang.navigation.NavigationView
+import com.wang.navigation.NavigationPageView
 import com.wang.navigation.listener.OnTabItemSelectedListener
 
 /**

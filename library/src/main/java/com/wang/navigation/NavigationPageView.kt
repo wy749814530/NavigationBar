@@ -6,13 +6,13 @@ import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.wang.navigation.adapter.FragmentViewPagerAdapter
+import com.wang.navigation.control.PageController
 import com.wang.navigation.listener.OnTabItemSelectedListener
 import java.util.*
 

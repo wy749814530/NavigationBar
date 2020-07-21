@@ -1,5 +1,9 @@
 # NavigationBar
 Android 一行代码创建底部导航栏
+
+## 看下效果
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200720201539567.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MjE2OTcwMg==,size_16,color_FFFFFF,t_70)
+
 ## 一、如何引入
 ### Step 1. 将JitPack存储库添加到您的构建文件中
 ```java
@@ -14,7 +18,7 @@ allprojects {
 ```java
 dependencies {
     ···
-    implementation 'com.github.wy749814530:NavigationBar:1.0.8'
+    implementation 'com.github.wy749814530:NavigationBar:1.0.7'
 }
 ```
 ## 二、XML 布局
@@ -132,17 +136,17 @@ fun addItem(
 ```java
  fun build(): NavigationView.NavigationPager
 ```
-#### 5.1 NavigationView.NavigationPager 
+#### 5.1 NavigationView.NavigationPager
 ##### 5.1.1 若需要支持左右滑动则需要设置ViewPager,不需要左右滑动，则不需要调用此方法。
 ```java
- fun setWithViewPager(viewPager: ViewPager?): NavigationPager 
+ fun setWithViewPager(viewPager: ViewPager?): NavigationPager
 ```
 #### 5.1.2 构建完成开始绘制
 ```java
-fun applay() 
+fun applay()
 ```
 
-### 6. 设置要显示的Fragment 
+### 6. 设置要显示的Fragment
 ```java
 fun setSelect(index: Int)
 ```
@@ -190,11 +194,9 @@ fun setMargin(titleIconMargin: Int): NavigationView
 ```
 
 
-
-
-
-
-
+#### 源码地址
+https://github.com/wy749814530/NavigationBar
+欢迎下载源码
 
 
 
