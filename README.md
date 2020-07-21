@@ -79,7 +79,7 @@ navigationView.setContainer(R.id.fl_container)
           "EEEE",
           R.mipmap.ic_launcher,
           R.mipmap.ic_launcher_round
-      ).build().setWithViewPager(viewPager).applay();
+      ).build().setWithViewPager(viewPager).apply();
 
   navigationView.setTabItemSelectedListener(object : OnTabItemSelectedListener {
       override fun onSelected(index: Int, old: Int) {
@@ -196,7 +196,7 @@ fun setMargin(titleIconMargin: Int): NavigationView
 
 #### 源码地址
 https://github.com/wy749814530/NavigationBar
-欢迎下载源码
+劳烦顺手点下start
 
 
 
